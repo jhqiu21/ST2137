@@ -11,3 +11,11 @@ ST2137 Statistical Computing and Programming Code and Practice
     ```
     pip install -r requirements.txt
     ```
+- Running Jupyter Lab
+    ```
+    jupyter lab
+    ```
+- Deactivate virtual environment
+    ```
+    deactivate
+    ```
