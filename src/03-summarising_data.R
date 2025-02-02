@@ -13,8 +13,7 @@ use_virtualenv(venv_paths$path[id])
 ## ----r-stud-perf-1-------------------------------------------------------------------------------------
 #| warning: false
 #| message: false
-stud_perf <- read.table("data/student/student-mat.csv", sep=";", 
-                        header=TRUE)
+stud_perf <- read.table("data/student/student-mat.csv", sep=";", header=TRUE)
 summary(stud_perf$G3)
 sum(is.na(stud_perf$G3))
 
@@ -46,6 +45,9 @@ hist(stud_perf$G3, main="G3 histogram")
 #| fig-align: center
 #| out-width: "80%"
 library(lattice)
+histogram(~G3 | Medu, data=stud_perf, type="density")
+
+# reorder the graph
 histogram(~G3 | Medu, data=stud_perf, type="density",
           as.table=TRUE)
 
@@ -56,8 +58,12 @@ histogram(~G3 | Medu, data=stud_perf, type="density",
 ## ----r-stud-perf-5-------------------------------------------------------------------------------------
 #| fig-align: center
 #| out-width: "80%"
-densityplot(~G3, groups=Medu, data=stud_perf, auto.key = TRUE, bw=1.5)
+density_data <- density(stud_perf$G3)
+plot(density_data)
 
+
+densityplot(~G3, groups=Medu, data=stud_perf, auto.key = TRUE, bw=1.5)
+densityplot(~G3 | Medu, data=stud_perf, auto.key = TRUE, bw=1.5)
 
 ## import matplotlib.pyplot as plt
 ## f, axs = plt.subplots(2, 3, squeeze=False, figsize=(15,6))
@@ -70,8 +76,14 @@ densityplot(~G3, groups=Medu, data=stud_perf, auto.key = TRUE, bw=1.5)
 ## ----r-stud-perf-6-------------------------------------------------------------------------------------
 #| fig-align: center
 #| out-width: "70%"
+#| lattice package boxplot
+#| Y ~ X relationship 
 bwplot(G3 ~ goout, horizontal = FALSE, data=stud_perf)
 
+bwplot(G3 ~ goout | Medu, horizontal = FALSE, data=stud_perf)
+
+out <- boxplot(stud_perf$G3)
+out # returns all information we need for the data
 
 ## stud_perf.plot.box(column='G3', by='goout')
 
@@ -141,6 +153,15 @@ qqline(concrete$Comp.Strength)
 #| fig-height: 12
 col_to_use <- c("Cement", "Slag", "Comp.Strength", "Water", "SLUMP.cm.",
                 "FLOW.cm.")
+
+# normal scatter
+plot(x=concrete$Water, y=concrete$SLUMP.cm., cex=1)
+# we can change the size of point on the plot using cex
+plot(x=concrete$Water, y=concrete$SLUMP.cm., cex=0.5)
+# pch to change the plot symbols
+plot(x=concrete$Water, y=concrete$SLUMP.cm., cex=1, pch=2)
+# see whether there is any relationship in the plot 
+# when being asked in the exam
 pairs(concrete[, col_to_use], panel = panel.smooth)
 
 
@@ -156,6 +177,7 @@ pairs(concrete[, col_to_use], panel = panel.smooth)
 #| fig-height: 5
 
 library(psych)
+cor(concrete[,col_to_use])
 corPlot(cor(concrete[, col_to_use]), cex=0.8, show.legend = FALSE)
 
 
