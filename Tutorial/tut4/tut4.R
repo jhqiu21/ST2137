@@ -1,4 +1,4 @@
-data <- read.csv("../../src/data/student/student-por.csv", sep = ";")
+data <- read.csv("../../src/data/student/student-mat.csv", sep = ";")
 df <- data.frame(data)
 df$address <- as.factor(df$address)
 df$paid <- as.factor(df$paid)
@@ -16,10 +16,11 @@ df$LG <- as.factor(cut(df$G3, breaks=c(-1, 10, 12, 15, 18, 20),
 likert_vars <- c("famrel", "freetime", "goout", 
                  "Dalc", "Walc", "health")
 
-for (v in likert_vars) {
-  table_var <- table(df[[v]], df$LG)
-  chisq.test(table_var)
-}
+
+#for (v in likert_vars) {
+#  table_var <- table(df[[v]], df$LG)
+#  chisq.test(table_var)
+#}
 
 alc_fam <- table(data.frame("Dalc"=as.factor(df$Dalc), 
                             "Walc"=as.factor(df$Walc)))
@@ -35,7 +36,7 @@ mi <- function(x, y) {
   for (i in rownames(joint_table)) {
     for (j in colnames(joint_table)) {
       pxy <- joint_table[i, j]
-      if (pxy > 0) {  # Avoid log(0)
+      if (pxy > 0) {
         mi <- mi + pxy * log(pxy / (px[i] * py[j]))
       }
     }
