@@ -26,7 +26,7 @@ histogram(~failure_times | aircraft, data=ftimes_df,
 ## QUESTION 3
 mom_gamma <- function(data) {
   xbar = mean(data)
-  sx2 = var(data)
+  sx2 = mean(data^2) - mean(data)^2
   alpha_hat = (xbar^2) / sx2
   beta_hat = sx2 / xbar
   return (list(alpha = alpha_hat, beta = beta_hat))
