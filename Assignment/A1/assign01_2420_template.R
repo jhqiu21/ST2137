@@ -13,23 +13,25 @@ list = strsplit(tmp, " ")
 ftimes_df <- do.call(rbind, lapply(seq_along(list), function(i) {
   data.frame(aircraft = i, failure_times = as.numeric(unlist(list[[i]])))
 }))
+head(ftimes_df)
+
 
 ## QUESTION 2
 library(lattice)
 histogram(~failure_times | aircraft, data=ftimes_df,
           layout = c(5, 2),
           as.table=TRUE,
-          main = "Failure Times Distribution by Aircraft",
-          xlab = "Failure Times",
+          main = "Failure Times of Different Aircrafts",
+          xlab = "Failure Time",
           ylab = "Frequency")
 
 ## QUESTION 3
 mom_gamma <- function(data) {
   xbar = mean(data)
   sx2 = mean(data^2) - mean(data)^2
-  alpha_hat = (xbar^2) / sx2
-  beta_hat = sx2 / xbar
-  return (list(alpha = alpha_hat, beta = beta_hat))
+  alpha = (xbar^2) / sx2
+  beta = sx2 / xbar
+  return(data.frame(alpha, beta))
 }
 
 ac1 <- ftimes_df$failure_times[ftimes_df$aircraft == 1]
