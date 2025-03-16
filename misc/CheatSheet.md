@@ -1,5 +1,14 @@
 # R programming cheatsheet
 
+## Catalog
+
+- [Vector](#vector)
+- [List](#List)
+- [Sequence](#Sequence)
+- [Matrix](#Matrix)
+- [Factor](#Factor)
+- [Dataframe](#Dataframe)
+
 ## Basic Syntax
 
 
@@ -73,6 +82,57 @@ selection_vector <- poker_vector > 0
 selection_vector 
 ```
 returns a boolean vector for condition `poker_vector > 0`
+
+
+## List
+### Create List
+Syntax: `my_list <- list(comp1, comp2 ...)`
+```R
+# Vector with numerics from 1 up to 10
+my_vector <- 1:10 
+# Matrix with numerics from 1 up to 9
+my_matrix <- matrix(1:9, ncol = 3)
+# First 10 elements of the built-in data frame mtcars
+my_df <- mtcars[1:10,]
+# Construct list with these different elements:
+my_list <- list(my_vector, my_matrix, my_df)
+```
+Create List with Name of each component
+`list(name1=v1, name2=v2, ...)`
+```R
+shining_list <- list(moviename = mov, actors = act, reviews = rev)
+```
+
+### Name List Components
+```R
+names(my_list) <- c("vec", "mat", "df")
+```
+
+### Select
+The following are equivalent
+```R
+shining_list[["actors"]]
+shining_list$actors
+```
+## Sequence
+### Create sequence
+```R
+seq(from, to, by, length.out)  
+```
+
+## Sample
+
+```R
+sample(x, size, replace = FALSE, prob = NULL)
+```
+Takes a sample of the specified size from the elements of x using either with or without replacement.
+
+```R
+sample(c("male", "female"), size=6, TRUE)
+# -> [1] "male"   "male"   "male"   "male"   "female" "male"  
+```
+
+
 
 ## Matrix
 ### Create a Matrix
@@ -243,53 +303,6 @@ positions <- order(planets_df$diameter)
 planets_df[positions, ] # Use positions to sort planets_df
 ```
 
-## List
-### Create List
-Syntax: `my_list <- list(comp1, comp2 ...)`
-```R
-# Vector with numerics from 1 up to 10
-my_vector <- 1:10 
-# Matrix with numerics from 1 up to 9
-my_matrix <- matrix(1:9, ncol = 3)
-# First 10 elements of the built-in data frame mtcars
-my_df <- mtcars[1:10,]
-# Construct list with these different elements:
-my_list <- list(my_vector, my_matrix, my_df)
-```
-Create List with Name of each component
-`list(name1=v1, name2=v2, ...)`
-```R
-shining_list <- list(moviename = mov, actors = act, reviews = rev)
-```
-
-### Name List Components
-```R
-names(my_list) <- c("vec", "mat", "df")
-```
-
-### Select
-The following are equivalent
-```R
-shining_list[["actors"]]
-shining_list$actors
-```
-## Sequence
-### Create sequence
-```R
-seq(from, to, by, length.out)  
-```
-
-## Sample
-
-```R
-sample(x, size, replace = FALSE, prob = NULL)
-```
-Takes a sample of the specified size from the elements of x using either with or without replacement.
-
-```R
-sample(c("male", "female"), size=6, TRUE)
-# -> [1] "male"   "male"   "male"   "male"   "female" "male"  
-```
 
 
 ## Data Processing
