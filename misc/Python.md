@@ -46,7 +46,7 @@ dict = { "X": "x", "Y": "y", "Z": "z" }
      ```
 ### Remove Element
 1. `pop()` method removes the item with the **specified key name**
-     ```pyhton
+     ```python
      dict.pop("X") # remove the key X
      ```
 1. `popitem()` method removes the last inserted item
