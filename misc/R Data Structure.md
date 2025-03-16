@@ -4,7 +4,9 @@
 
 - [Vector](#vector)
 - [List](#List)
+- [Sample](#Sample)
 - [Sequence](#Sequence)
+- [Replication](#Replication)
 - [Matrix](#Matrix)
 - [Factor](#Factor)
 - [Dataframe](#Dataframe)
@@ -15,20 +17,21 @@
 
 
 ## Vector 
-
-### Name the veator
-
+### Create Vector
 ```R
-poker_vector <- c(140, -50, 20, -120, 240)
-
+v1 <- c(1, 2, 3)
+v2 <- 1:4 # 1 2 3 4
+```
+### Name the veator
+```R
+v <- c(1, 2, 3, 4, 5)
 # Assign days as names of poker_vector
-names(poker_vector) <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
+names(v) <- c("A", "B", "C", "D", "E")
 ```
 Output
 ```
-poker_vector
-Monday   Tuesday Wednesday  Thursday    Friday 
-    140       -50        20      -120       240 
+A B C D E 
+1 2 3 4 5 
 ```
 
 ### Algebric Operation
@@ -40,17 +43,22 @@ total_vector <- A_vector + B_vector
 ```
 Sum of the vectors only depend on index, instead of name. For example
 ```R
-A <- c(140, -50, 20, -120, 240)
-B <- c(-24, -50, 100, -350, 10)
-Day1 <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
-Day2 <- c("Sunday", "Tuesday", "Wednesday", "Thursday", "Friday")
-names(A) <- Day1
-names(B) <- Day2
+A <- c(1, 2, 3, 4, 5)
+B <- c(2, 4, 6, 8, 10)
+nameA <- c("A", "B", "C", "D", "E")
+nameB <- c("F", "A", "B", "D", "C")
+names(A) <- nameA
+names(B) <- nameB
 
-total_daily <- A + B
+result <- A + B
 ```
-will return the sum of A and B by index. In other words, the different of name at index 1 will not throw out an error.
-
+- Return the sum of A and B by index. 
+- Different of name at same index will not throw out an error. 
+- Result Vector will use the name of first operand
+```
+A  B  C  D  E 
+3  6  9 12 15 
+```
 ### Sum of Vector
 ```R
 v <- c(140, -50, 20, -120, 240)
@@ -59,12 +67,13 @@ total <- sum(v)
 returns sum of all values in the vector.
 
 ### Vector Selection
+#### Select by Index
 ```R
 v <- c(140, -50, 20, -120, 240)
 selection <- v[c(2, 3, 4)] # this is not slicing!
 ```
 returns 2nd, 3rd and 4th element in `v`
-
+#### Select by condition
 ```R
 v <- c(1, 2, 3, 4, 5)
 cond <- c(TRUE, TRUE, FALSE, FALSE, TRUE)
@@ -78,41 +87,53 @@ slicing <- v[2:5]
 returns 2nd to 5th element of the vector.
 ### Broadcast
 ```R
-selection_vector <- poker_vector > 0
-selection_vector 
+v <- c(-1, 1, 2, 0, -3, 5)
+c <- v > 0 
+c # c(FALSE, TRUE, TRUE, FALSE, FALSE,TRUE)
 ```
 returns a boolean vector for condition `poker_vector > 0`
-
+### Sort the vector
+#### `sort()`
+```R
+sort(v)
+```
+#### Sort by position
+```R
+a <- c(9,8,7,7,5,2,8,2,1,7)
+order(a) # returns the "sorted index"
+a[order(a)] # reorder the previous vector
+```
 
 ## List
 ### Create List
-Syntax: `my_list <- list(comp1, comp2 ...)`
+Syntax: 
+- `my_list <- list(comp1, comp2 ...)`
+- `list(name1=v1, name2=v2, ...)`
 ```R
-# Vector with numerics from 1 up to 10
-my_vector <- 1:10 
-# Matrix with numerics from 1 up to 9
-my_matrix <- matrix(1:9, ncol = 3)
-# First 10 elements of the built-in data frame mtcars
-my_df <- mtcars[1:10,]
-# Construct list with these different elements:
-my_list <- list(my_vector, my_matrix, my_df)
-```
-Create List with Name of each component
-`list(name1=v1, name2=v2, ...)`
-```R
-shining_list <- list(moviename = mov, actors = act, reviews = rev)
+v <- c(1, 2, 3)
+mat <- matrix(1:4, nrow = 2)
+
+l <- list(v, mat, 1)
+list_with_name <- list("vec"=vec, "mat"=mat, "int"=1)
 ```
 
 ### Name List Components
 ```R
-names(my_list) <- c("vec", "mat", "df")
+names(l) <- c("vec", "mat", "integer")
+```
+### Select
+#### Select Entry
+Return a list in target `index` / `name`
+```R
+tmp <- list_with_name["mat"]
+typeof(tmp) # -> list
 ```
 
-### Select
-The following are equivalent
+#### Select Value
+The following are equivalent, return the value in target `index` / `name`
 ```R
-shining_list[["actors"]]
-shining_list$actors
+list_with_name[["mat"]] # ! double brackets
+list_with_name$mat
 ```
 ## Sequence
 ### Create sequence
@@ -130,6 +151,18 @@ Takes a sample of the specified size from the elements of x using either with or
 ```R
 sample(c("male", "female"), size=6, TRUE)
 # -> [1] "male"   "male"   "male"   "male"   "female" "male"  
+```
+
+## Replication
+
+### Replication in Vector
+```R
+rep(1, 5) # 1 1 1 1 1
+rep(c(1,2,3), 3) # 1 2 3 1 2 3 1 2 3
+```
+### Replication in List
+```R
+rep(list(1,2,3), 3) # list(1, 2, 3, 1, 2, 3, 1, 2, 3)
 ```
 
 
@@ -190,6 +223,10 @@ total_row <- rowSums(my_matrix)
 #### Column Sum
 ```R
 total_col <- colSums(my_matrix)
+```
+### Total
+```R
+total <- sum(my_matrix)
 ```
 #### Transpose: 
 ```R
@@ -279,9 +316,13 @@ str(mtcars)
 Use `str()` to investigate the stucture of the data frame.
 
 ### Selection
-Select first 5 items in the "diameter" column
+Select first 5 items in the "G3" column
 ```R
-planets_df[1:5,"diameter"]
+stud_perf[1:5,"G3"] 
+```
+Select "G2" column and "G3" column
+```R
+stud_perf[,c("G2","G3")]
 ```
 Using boolean vector to select rows, returns the rows whose index is TRUE in the boolean vector
 ```R
@@ -294,31 +335,17 @@ subset(my_df, subset = some_condition)
 ```
 ### Sort
 ```R
-order(a) # returns the "sorted index"
-a[order(a)] # reorder the previous vector
+positions <- order(df$G3)
+df[positions, ] # Sort df by G3
 ```
-Sort the data frame
-```R
-positions <- order(planets_df$diameter) 
-planets_df[positions, ] # Use positions to sort planets_df
+Output: Note that the index will not change
 ```
-
-
-
-## Data Processing
-
-### List all unique number 
-```R
-unique(heart_failure$DEATH_EVENT)
-```
-```python
-unique_values = heart_failure["DEATH_EVENT"].unique()
-```
-
-### Read/Write Data
-
-#### JSON
-```R
-library(jsonlite)
-read_json(....)
+   G2 G3
+1   6  6
+2   5  6
+8   5  6
+3   8 10
+5  10 10
+7  12 11
+^ index do not change!
 ```
