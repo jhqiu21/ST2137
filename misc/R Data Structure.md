@@ -1,20 +1,34 @@
 # R programming cheatsheet
 
-## Catalog
-
+- [Basic](#basic-syntax)
 - [Vector](#vector)
-- [List](#List)
-- [Sample](#Sample)
-- [Sequence](#Sequence)
-- [Replication](#Replication)
-- [Matrix](#Matrix)
-- [Factor](#Factor)
-- [Dataframe](#Dataframe)
+- [List](#list)
+- [Sample](#sample)
+- [Sequence](#sequence)
+- [Replication](#replication)
+- [Matrix](#matrix)
+- [Factor](#factor)
+- [Dataframe](#dataframe)
 
-## Basic Syntax
-
-
-
+## Basic-Syntax
+### Loop
+```R
+while(x<=10) {
+  x  
+}
+```
+```R
+for(x in 1:10){ # 1 2 3 4 5 6 7 8 9 10
+  x
+}
+```
+### Function
+```R
+f <- function(x) {
+  2 * sin(x)
+}
+f(2)
+```
 
 ## Vector 
 ### Create Vector
@@ -139,6 +153,8 @@ list_with_name$mat
 ### Create sequence
 ```R
 seq(from, to, by, length.out)  
+seq(from=2, to=10, by=2) # 2  4  6  8 10
+seq(from=2, to=10, length = 5) # 2  4  6  8 10
 ```
 
 ## Sample
@@ -159,6 +175,7 @@ sample(c("male", "female"), size=6, TRUE)
 ```R
 rep(1, 5) # 1 1 1 1 1
 rep(c(1,2,3), 3) # 1 2 3 1 2 3 1 2 3
+rep(c(6,3),c(2,4)) # 6 6 3 3 3 3
 ```
 ### Replication in List
 ```R
@@ -316,27 +333,32 @@ str(mtcars)
 Use `str()` to investigate the stucture of the data frame.
 
 ### Selection
-Select first 5 items in the "G3" column
+#### Select first 5 items in the "G3" column
 ```R
 stud_perf[1:5,"G3"] 
 ```
-Select "G2" column and "G3" column
+#### Select "G2" column and "G3" column
 ```R
 stud_perf[,c("G2","G3")]
 ```
-Using boolean vector to select rows, returns the rows whose index is TRUE in the boolean vector
+### Using boolean vector to select rows, returns the rows whose index is TRUE in the boolean vector
 ```R
 # rings_vector = c(FALSE, TRUE, FALSE, ....)
 planets_df[rings_vector,]
 ```
-Select items meet the certain condition
+#### Select items meet the certain condition
 ```R
 subset(my_df, subset = some_condition)
+```
+```R
+df[df$Gender == "M" & df$CA2 > 85, ] # (vectorised) AND
+df[df$Gender == "M" | df$CA2 > 85, ] # (vectorised) OR
 ```
 ### Sort
 ```R
 positions <- order(df$G3)
 df[positions, ] # Sort df by G3
+df[rev(positions), ] # Sort in reversed order
 ```
 Output: Note that the index will not change
 ```
