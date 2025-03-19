@@ -33,7 +33,10 @@ aggregate(G3 ~ Medu, data=stud_pref, FUN=summary)
 ```
 ### `table(df$x)`
 ```R
-table(stud_perf$G3)
+tab <- table(stud_perf$G3)
+names(tab) # -> name row of the table
+c[name]    # -> value of 'name'
+as.numeric(tab) # -> vactor of value
 ```
 
 ## Histogram
@@ -212,4 +215,25 @@ mad(chem)/0.6745
 $$\hat{\sigma} = \frac{1}{1.35} IQR $$
 ```R
 IQR(chem)/1.35
+```
+
+## Regression
+```R
+Yk <- er_arrivals$num_arrivals
+Xk <- table(Yk)
+k <- as.integer(names(Xk))
+Xk <- as.vector(Xk)
+N <- length(Yk)
+phi <- lfactorial(k) + log(Xk/N)
+
+# compute lam_hat from slope
+lm1 <- lm(phi ~ k)
+slope <- unname(coef(lm1)[2])
+lam_hat <- exp(slope)
+```
+```R
+plot(k, phi, ylab=expression(phi[k]), pch=19, cex=1.5, bty='l',
+     main="Poisson-ness for E.R. arrivals")
+abline(b=slope, a=-lam_hat, lty=2, col="blue")
+text(1.8, -1.3, labels=expression(hat(lambda) == "0.56"))
 ```

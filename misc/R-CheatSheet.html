@@ -861,7 +861,10 @@ sum(is.na(df$x)) # -&gt; number of N.A in x column</code></pre>
 </div>
 <div id="tabledfx" class="section level3">
 <h3><code>table(df$x)</code></h3>
-<pre class="r"><code>table(stud_perf$G3)</code></pre>
+<pre class="r"><code>tab &lt;- table(stud_perf$G3)
+names(tab) # -&gt; name row of the table
+c[name]    # -&gt; value of &#39;name&#39;
+as.numeric(tab) # -&gt; vactor of value</code></pre>
 </div>
 </div>
 <div id="histogram" class="section level2">
@@ -1033,6 +1036,24 @@ mad(chem)/0.6745</code></pre>
 \]</span></p>
 <pre class="r"><code>IQR(chem)/1.35</code></pre>
 </div>
+</div>
+<div id="regression" class="section level2">
+<h2>Regression</h2>
+<pre class="r"><code>Yk &lt;- er_arrivals$num_arrivals
+Xk &lt;- table(Yk)
+k &lt;- as.integer(names(Xk))
+Xk &lt;- as.vector(Xk)
+N &lt;- length(Yk)
+phi &lt;- lfactorial(k) + log(Xk/N)
+
+# compute lam_hat from slope
+lm1 &lt;- lm(phi ~ k)
+slope &lt;- unname(coef(lm1)[2])
+lam_hat &lt;- exp(slope)</code></pre>
+<pre class="r"><code>plot(k, phi, ylab=expression(phi[k]), pch=19, cex=1.5, bty=&#39;l&#39;,
+     main=&quot;Poisson-ness for E.R. arrivals&quot;)
+abline(b=slope, a=-lam_hat, lty=2, col=&quot;blue&quot;)
+text(1.8, -1.3, labels=expression(hat(lambda) == &quot;0.56&quot;))</code></pre>
 </div>
 </div>
 
