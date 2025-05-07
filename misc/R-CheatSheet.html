@@ -357,6 +357,7 @@ display: none;
 <div id="data-structore" class="section level4">
 <h4>Data Structore</h4>
 <ul>
+<li><a href="#basic-syntax">Basic</a></li>
 <li><a href="#vector">Vector</a></li>
 <li><a href="#list">List</a></li>
 <li><a href="#sample">Sample</a></li>
@@ -391,20 +392,54 @@ Plots</a></li>
 <li><a href="#chi-square-test">Chi Square Test</a></li>
 <li><a href="#fisher-test">Fish Test</a></li>
 </ul>
-<p><strong>Robust Statistics</strong> - <a href="#robust">Robust</a> # R
-programming cheatsheet</p>
+<p><strong>Robust Statistics</strong> - <a href="#robust">Robust</a></p>
+</div>
+<div id="r-test" class="section level2">
+<h2>R-Test</h2>
 <ul>
-<li><a href="#basic-syntax">Basic</a></li>
-<li><a href="#vector">Vector</a></li>
-<li><a href="#list">List</a></li>
-<li><a href="#sample">Sample</a></li>
-<li><a href="#sequence">Sequence</a></li>
-<li><a href="#replication">Replication</a></li>
-<li><a href="#matrix">Matrix</a></li>
-<li><a href="#factor">Factor</a></li>
-<li><a href="#dataframe">Dataframe</a></li>
+<li><a href="#normal-assumption-check">Normal Assumption Check</a></li>
+<li><a href="#t-test">Parametric Independent t-Test</a></li>
+<li><a href="#pair">Parametric Pair t-Test</a></li>
+<li><a href="#wilcoxon-rank-sum">Non-Parametric Independent
+t-Test</a></li>
+<li><a href="#wilcoxon-sign-test">Non-Parametric Pair t-Test</a></li>
 </ul>
 </div>
+<div id="anova" class="section level2">
+<h2>ANOVA</h2>
+<ul>
+<li><a href="#dot-plot">Dot Plot</a></li>
+<li><a href="#one-way-analysis-of-variance">One-Way</a></li>
+<li><a href="#comparing-specific-groups">Comparing Specific
+Groups</a></li>
+<li><a href="#general-comparison-of-groups">General Comparison of
+Groups</a></li>
+<li><a href="#bonferroni-correction">Bonferroni Correction</a></li>
+<li><a href="#multiple-comparisons">Multiple Comparisons</a></li>
+</ul>
+</div>
+</div>
+<div id="r-regression" class="section level1">
+<h1>R Regression</h1>
+<ul>
+<li><a href="#analysis-of-model">Analysis of Model</a></li>
+<li><a href="#confidence-interval">Plot CI</a></li>
+<li><a href="#residual-analysis">Residual Analysis</a></li>
+<li><a href="#influential-points">Influential Points</a></li>
+</ul>
+<div id="r-simulation" class="section level2">
+<h2>R-Simulation</h2>
+<ul>
+<li><a href="#generate-observations">Generate RVs</a></li>
+<li><a href="#workflow">WorkFlow</a></li>
+<li><a href="#monte-carlo-integration">Monte-Carlo Integration</a></li>
+<li><a href="#confidence-intervals">CI</a></li>
+<li><a href="#type-i-error">Type I Error</a></li>
+</ul>
+</div>
+</div>
+<div id="r-programming-cheatsheet-1" class="section level1">
+<h1>R programming cheatsheet</h1>
 <div id="basic-syntax" class="section level2">
 <h2>Basic-Syntax</h2>
 <div id="loop" class="section level3">
@@ -736,8 +771,8 @@ df[rev(positions), ] # Sort in reversed order</code></pre>
 </div>
 </div>
 </div>
-<div id="data-processing" class="section level1">
-<h1>Data-Processing</h1>
+<div id="r-data-processing-1" class="section level1">
+<h1>R Data Processing</h1>
 <div id="readwrite-data" class="section level2">
 <h2>Read/Write Data</h2>
 <div id="table" class="section level3">
@@ -913,6 +948,7 @@ qqline(concrete$Comp.Strength)</code></pre>
 <h2>Scatterplot-Matrices</h2>
 <pre class="r"><code>col_to_use &lt;- c(&quot;G1&quot;, &quot;G2&quot;, &quot;G3&quot;)
 pairs(stud_perf[, col_to_use], panel = panel.smooth)</code></pre>
+<pre class="r"><code>xyplot(price ~ ldist | num_stores, as.table=TRUE, data=taiwan2, layout=c(4,3))</code></pre>
 </div>
 <div id="correlation-plot" class="section level2">
 <h2>Correlation-Plot</h2>
@@ -1054,6 +1090,506 @@ lam_hat &lt;- exp(slope)</code></pre>
      main=&quot;Poisson-ness for E.R. arrivals&quot;)
 abline(b=slope, a=-lam_hat, lty=2, col=&quot;blue&quot;)
 text(1.8, -1.3, labels=expression(hat(lambda) == &quot;0.56&quot;))</code></pre>
+</div>
+<div id="r-test-1" class="section level2">
+<h2>R-Test</h2>
+<div id="normal-assumption-check" class="section level3">
+<h3>Normal Assumption Check</h3>
+<div id="equal-variance" class="section level4">
+<h4>Equal Variance</h4>
+<p><strong>Rule of Thumb:</strong> If the larger s.d is more than twice
+the smaller one, than we should not use the equal variance form of the
+test.</p>
+<pre class="r"><code>aggregate(viscera ~ gender, data=abl, sd)</code></pre>
+</div>
+<div id="skewed" class="section level4">
+<h4>Skewed</h4>
+<pre class="r"><code>aggregate(viscera ~ gender, data=abl, Skew, method=1)</code></pre>
+</div>
+<div id="kurtosis" class="section level4">
+<h4>Kurtosis</h4>
+<ul>
+<li>Positive kurtosis implies that the tails are “fatter” than those of
+a Normal.</li>
+<li>Negative kurtosis indicate that the tails are “thinner” than those
+of a Normal.</li>
+</ul>
+<pre class="r"><code>aggregate(viscera ~ gender, data=abl, Kurt, method=1)</code></pre>
+</div>
+<div id="qq-plot-for-normality" class="section level4">
+<h4>QQ Plot for Normality</h4>
+<pre class="r"><code>library(lattice)
+histogram(~viscera | gender, data=abl, type=&quot;count&quot;)
+qqnorm(y, main=&quot;Female Abalones&quot;);  qqline(y)
+qqnorm(x, main=&quot;Male Abalones&quot;);  qqline(x)</code></pre>
+</div>
+<div id="hypothesis-tests-for-normality" class="section level4">
+<h4>Hypothesis tests for Normality</h4>
+<p><span class="math display">\[H_0: \text{Data follows Normal
+Distribution}\]</span> <span class="math display">\[H_0: \text{Data dose
+not follow Normal Distribution}\]</span></p>
+<pre class="r"><code>shapiro.test(x)</code></pre>
+<p>You may use following function to check normality during exam.</p>
+<pre class="r"><code>check_normality &lt;- function(x) {
+  res &lt;- shapiro.test(x)
+  if (res$p.value &lt; 0.05) {
+    print(&quot;Data dose NOT follow normal distribution&quot;)
+  } else {
+    print(&quot;Data follows normal distribution&quot;) 
+  }
+}
+check_normality(x)</code></pre>
+</div>
+</div>
+<div id="parametric-tests" class="section level3">
+<h3>Parametric Tests</h3>
+<div id="t-test" class="section level4">
+<h4>t-Test</h4>
+<p>Assumes that the data originate from a <strong>Normal
+distribution</strong>. - <span class="math inline">\(H_0: \mu_X =
+\mu_Y\)</span> / The population means of the two groups are equal. -
+<span class="math inline">\(H_1: \mu_X \neq \mu_Y\)</span> / The
+population means of the two groups are not equal.</p>
+<pre class="r"><code>data &lt;- read.csv(&quot;data/abalone_sub.csv&quot;)
+x &lt;- data$viscera[data$gender == &quot;M&quot;]
+y &lt;- data$viscera[data$gender == &quot;F&quot;]
+
+t.test(x, y, var.equal=TRUE)</code></pre>
+</div>
+<div id="pair" class="section level4">
+<h4>Pair</h4>
+<ul>
+<li><span class="math inline">\(D_i = X_i - Y_i\)</span></li>
+<li><span class="math inline">\(H_0: \mu_D = 0\)</span> / The mean
+difference between the paired observations is zero.</li>
+<li><span class="math inline">\(H_1: \mu_D \neq 0\)</span> / The mean
+difference between the paired observations is not zero.</li>
+</ul>
+<pre class="r"><code>data &lt;- read.csv(&quot;data/health_promo_hr.csv&quot;)
+before &lt;- data$baseline
+after &lt;- data$after5
+t.test(before, after, paired=TRUE)</code></pre>
+</div>
+</div>
+<div id="non-parametric-tests" class="section level3">
+<h3>Non-parametric Tests</h3>
+<p>If the distributional assumptions of the t-test are not met</p>
+<div id="wilcoxon-rank-sum" class="section level4">
+<h4>Wilcoxon Rank Sum</h4>
+<ul>
+<li>Independent 2-sample test</li>
+<li>Both <span class="math inline">\(n_1\)</span> and <span class="math inline">\(n_2\)</span> are at least 10</li>
+<li>Observations (not the ranks) come from an underlying
+<strong>continuous distribution</strong></li>
+</ul>
+<p><span class="math inline">\(H_0:\)</span> The distribution of group 1
+is in same location of the distribution of group 2.</p>
+<p><span class="math inline">\(H_1:\)</span> The distribution of group 1
+is a location shift of the distribution of group 2.</p>
+<pre class="r"><code>wilcox.test(x, y)</code></pre>
+</div>
+<div id="wilcoxon-sign-test" class="section level4">
+<h4>Wilcoxon Sign Test</h4>
+<ul>
+<li><p>Paired Samples Test</p></li>
+<li><p>If the number of non-zero <span class="math inline">\(D_i\)</span> ’s is at least 16, then the test
+statistic <span class="math inline">\(W\)</span> follows a <span class="math inline">\(N(0,1)\)</span> distribution
+approximately.</p></li>
+<li><p><span class="math inline">\(D_i = X_i - Y_i\)</span></p></li>
+<li><p><span class="math inline">\(H_0: \text{median of } D_i =
+0\)</span> / The median of the differences between the paired
+observations is zero.</p></li>
+<li><p><span class="math inline">\(H_1: \text{median of } D_i \neq
+0\)</span> / The median of the differences between the paired
+observations is not zero.</p></li>
+<li><p><code>exact</code> version of the test cannot be used when there
+are ties. i.e. There exist 0 in <span class="math inline">\(D\)</span>.</p></li>
+</ul>
+<pre class="r"><code>exact_check &lt;- function(x, y) {
+  len &lt;- length(which((x-y)==0))
+  if (len == 0) {
+    print(&quot;The exact parameter should set to be FALSE&quot;)
+  } else {
+    print(&quot;The exact parameter should set to be TRUE or Omit&quot;)
+  }
+}</code></pre>
+<pre class="r"><code>wilcox.test(before, after, paired = TRUE, exact = FALSE)</code></pre>
+<ul>
+<li>If all data are non-zero</li>
+</ul>
+<pre class="r"><code>wilcox.test(D,alternative = &quot;greater&quot;)</code></pre>
+</div>
+</div>
+</div>
+<div id="anova-1" class="section level2">
+<h2>ANOVA</h2>
+<div id="dot-plot" class="section level3">
+<h3>Dot Plot</h3>
+<pre class="r"><code>locate_df &lt;- read.table(&quot;data/locate.txt&quot;, header=TRUE)
+locate_df$location &lt;- factor(locate_df$location, levels=c(&quot;R&quot;, &quot;M&quot;, &quot;F&quot;))
+dotplot(sales ~ location, data = locate_df, cex=1.2, main=&quot;Sales by Aisle Location&quot;)</code></pre>
+</div>
+<div id="one-way-analysis-of-variance" class="section level3">
+<h3>One-Way Analysis of Variance</h3>
+<ul>
+<li>Set the reference level to be type A <span class="math inline">\(\Leftrightarrow\)</span> The coefficient of type A
+is zero in the model.</li>
+</ul>
+<pre class="r"><code>data &lt;- read.csv(&quot;data/antibio.csv&quot;)
+u_levels &lt;- sort(unique(data$type))
+data$type &lt;- factor(data$type, levels=u_levels[c(2, 1, 3, 4, 5, 6)])</code></pre>
+<pre class="r"><code>M1 &lt;- lm(org ~ type, data=heifers)
+anova(M1)</code></pre>
+<pre class="r"><code>anova_model &lt;- aov(org ~ type, data)
+summary(anova_model)</code></pre>
+<p>Check ANOVA Assumptions - The observations are
+<strong>independent</strong> of each other. - The
+<strong>errors</strong> are Normally distributed. - The variance within
+each group is the same.</p>
+<pre class="r"><code>r1 &lt;- residuals(M1)
+hist(r1)
+qqnorm(r1); qqline(r1)
+shapiro.test(r1)</code></pre>
+</div>
+<div id="comparing-specific-groups" class="section level3">
+<h3>Comparing specific groups</h3>
+<pre class="r"><code>est_coef &lt;- coef(M1)  # coefficients of linear model
+est1  &lt;- unname(est_coef[3])  # coefficients without column name</code></pre>
+<p>Construct 95% Confidence Interval <span class="math display">\[SE=\sqrt{MS_W \left( \frac{1}{n_{i_1}} +
+\frac{1}{n_{i_2}} \right) }\]</span> <span class="math display">\[100(1-
+\alpha)\%-\text{CI} = (\overline{Y_{i_1}} - \overline{Y_{i_2}}) \pm
+t_{n-k, \alpha/2}  \times SE\]</span></p>
+<pre class="r"><code>summary_out &lt;- anova(M1)
+MSW &lt;- summary_out$`Mean Sq`[2]
+df &lt;- summary_out$Df[2]
+q1 &lt;- qt(0.025, df, 0, lower.tail = FALSE)
+
+lower_ci &lt;- est1 - q1*sqrt(MSW * (1/6 + 1/6))
+upper_ci &lt;- est1 + q1*sqrt(MSW * (1/6 + 1/6))
+
+cat(&quot;The 95% CI for the diff. between Enrofloxacin and Control is (&quot;,
+    format(lower_ci, digits = 3), &quot;,&quot;, 
+    format(upper_ci, digits = 3), &quot;).&quot;, sep=&quot;&quot;)</code></pre>
+</div>
+<div id="general-comparison-of-groups" class="section level3">
+<h3>General Comparison of Groups</h3>
+<p>Comparison of a collection of <span class="math inline">\(l_1\)</span> groups with another collection of
+<span class="math inline">\(l_2\)</span> groups</p>
+<ol style="list-style-type: decimal">
+<li>Compute the estimate of the contrast: <span class="math display">\[
+L = \sum_{i=1}^k c_i \overline{Y_i} \text{ where } \sum_{i=1}^k
+c_i=0\]</span></li>
+<li>Compute the standard error of the above estimator: <span class="math display">\[ SE = \sqrt{MS_W \sum_{i=1}^k \frac{c_i^2}{n_i} }
+\]</span></li>
+<li>Compute the <span class="math inline">\(100(1- \alpha)%\)</span>
+confidence interval as: <span class="math display">\[ L \pm t_{n-k,
+\alpha/2}  \times SE \]</span></li>
+</ol>
+<pre class="r"><code>c1 &lt;- c(-1, 0.5, 0.5)  # weight vector
+n_vals &lt;- c(6, 6, 6)  # number of observations in each group
+MSW &lt;- summary_out$`Mean Sq`[2]
+df &lt;- summary_out$Df[2]
+
+L &lt;- sum(c1*est_coef[3:5])  # construct estimate L
+se1 &lt;- sqrt(MSW * sum( c1^2 / n_vals ))  # compute SE
+q1 &lt;- qt(0.025, df, 0, lower.tail = FALSE)
+
+lower_ci &lt;- L - q1*se1
+upper_ci &lt;- L + q1*se1
+
+cat(&quot;The 95% CI for the diff. between the two groups is (&quot;,
+    format(lower_ci, digits = 2), &quot;,&quot;, 
+    format(upper_ci, digits = 2), &quot;).&quot;, sep=&quot;&quot;)</code></pre>
+</div>
+<div id="bonferroni-correction" class="section level3">
+<h3>Bonferroni Correction</h3>
+<p>Set confidential level to be <span class="math inline">\((1 - \alpha
+/ m)\)</span></p>
+<pre class="r"><code>anova_mod &lt;- lm(sales ~ location, data=locate_df)
+confint(anova_mod, level = 1-0.05/2)</code></pre>
+</div>
+<div id="multiple-comparisons" class="section level3">
+<h3>Multiple Comparisons</h3>
+<div id="tukeyhsd" class="section level4">
+<h4>TukeyHSD</h4>
+<ul>
+<li>Correcting for multiple comparisons</li>
+<li>Construct confidence intervals for <strong>all</strong> pairwise
+comparisons</li>
+<li><strong>Shorter</strong> confidence intervals than a Bonferroni
+correction for all pairwise comparisons.</li>
+</ul>
+<p><span class="math display">\[H_0: \mu_X = \mu_Y\]</span></p>
+<pre class="r"><code>TukeyHSD(aov(M1), ordered = TRUE)</code></pre>
+</div>
+<div id="kruskal-wallis-procedure" class="section level4">
+<h4>Kruskal-Wallis Procedure</h4>
+<ul>
+<li>If the assumptions of the ANOVA procedure are not met</li>
+<li>Generalisation of the Wilcoxon Rank-Sum test for 2 independent
+samples.</li>
+<li>This test should only be used if <span class="math inline">\(n_i
+\geq 5\)</span> for all groups.</li>
+</ul>
+<p><span class="math inline">\(H_0:\)</span> All groups follow the same
+distribution</p>
+<p><span class="math inline">\(H_1:\)</span> At least one of the groups’
+distribution differs from another by a location shift.</p>
+<pre class="r"><code>kruskal.test(heifers$org, heifers$type)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div id="r-regression-1" class="section level1">
+<h1>R Regression</h1>
+<div id="regression-model-ysim-x_1-x_2-x_1x_2" class="section level3">
+<h3>Regression Model <span class="math inline">\(Y\sim X_1 + X_2 +
+X_1X_2\)</span></h3>
+<pre class="r"><code>M &lt;- lm(y ~ x1 + x2 + x1 * x2, data = ...)
+M &lt;- lm(y ~ x1 + x2 + x1 : x2, data = ...)</code></pre>
+<p>Interpretation of Coefficients:</p>
+<p><span class="math display">\[y_1 = \beta_0 + \beta_1 X_1 + \beta_2
+I(X_2 = 1)\]</span></p>
+<ul>
+<li><p>For any fixed <span class="math inline">\(X_2\)</span>, when
+<span class="math inline">\(X_1\)</span> increases by 1 unit, the <span class="math inline">\(y\)</span> will increase by <span class="math inline">\(\beta_1\)</span> unit</p></li>
+<li><p>For any fixed <span class="math inline">\(X_1\)</span>, the <span class="math inline">\(y\)</span> of type 1 (<span class="math inline">\(X_2=1\)</span>) is <span class="math inline">\(\beta_2\)</span> more than the one of type 0
+(<span class="math inline">\(X_2=0\)</span>)</p></li>
+</ul>
+<p><span class="math display">\[y_2 = \beta_0 + \beta_1 X_1 + \beta_2
+I(X_2 = 1) + \beta_3 X_1 \times I(X_2 = 1)\]</span></p>
+<ul>
+<li>For type 1 (<span class="math inline">\(X_2=1\)</span>) when <span class="math inline">\(X_1\)</span> increases by 1 unit, <span class="math inline">\(y\)</span> will increase by (<span class="math inline">\(\beta_1 + \beta_3\)</span>) unit. For type 0
+(<span class="math inline">\(X_2=0\)</span>) when <span class="math inline">\(X_1\)</span> increases by 1 unit, <span class="math inline">\(y\)</span> will increase by $_1 unit.</li>
+</ul>
+<p>Plot <span class="math inline">\(Y\sim X1+X2\)</span> where <span class="math inline">\(X2\)</span> is categorical variable</p>
+<pre class="r"><code>bike2 &lt;- read.csv(&quot;data/bike2.csv&quot;)
+lm_reg_casual &lt;- lm(registered ~ casual, data = bike2)
+lm_reg_casual2 &lt;- lm(registered ~ casual + workingday, data = bike2)</code></pre>
+<pre class="r"><code>plot(x=bike2$casual, y=bike2$registered, 
+     col=ifelse(bike2$workingday == &quot;yes&quot;, &quot;salmon&quot;, &quot;deepskyblue4&quot;), #yes is red point, no is blue point
+     main=&quot;Comparing fitted models&quot;, cex=0.8,
+     xlab=&quot;Casual&quot;, ylab=&quot;Registered&quot;)
+abline(lm_reg_casual, col=&quot;deepskyblue4&quot;, lty=2) # plot Y~X1 regression line
+est_coef &lt;- coef(lm_reg_casual2)
+abline(est_coef[1], est_coef[2], col=&quot;deepskyblue4&quot;) # plot regression line of Y in non-workingday
+abline(est_coef[1]+est_coef[3], est_coef[2], col=&quot;salmon&quot;) # plot regression line of Y in workingday
+legend(&quot;bottomright&quot;, legend=c(&quot;lm_reg_casual&quot;, &quot;lm_reg_causal2&quot;), lty=c(1,2), cex=0.7)  # add legend</code></pre>
+</div>
+<div id="transformation-of-response" class="section level3">
+<h3>Transformation of Response</h3>
+<pre class="r"><code>M1 &lt;- lm(log(y) ~ x, data = ...)
+M2 &lt;- lm(sqrt(y) ~ x, data = ...)</code></pre>
+</div>
+<div id="analysis-of-model" class="section level3">
+<h3>Analysis of Model</h3>
+<pre class="r"><code>concrete &lt;- read.csv(&quot;data/concrete+slump+test/slump_test.data&quot;)
+names(concrete)[c(1,11)] &lt;- c(&quot;id&quot;, &quot;Comp.Strength&quot;)
+model &lt;- lm(FLOW.cm. ~ Water, data=concrete)</code></pre>
+<p><strong>Explain Significance</strong> - t-test has test statistic t =
+XX which has null distribution of t(df, find in residual), and p-value
+of the test is then &lt; 0.001. - With a very small p-value, the data
+provide very strong evidence that (X/Model/..) is significant.</p>
+<pre class="r"><code>summary(model)</code></pre>
+<ul>
+<li><span class="math inline">\(R^2\)</span>: Model can explain XX% of
+the variation in the observed response</li>
+</ul>
+<pre class="r"><code>summary_out &lt;- summary(model)
+summary_out$r.squared
+summary_out$adj.r.squared</code></pre>
+<pre class="r"><code>unname(coef(lm_sg_pop)) # coefficients estimates without column name
+summary_out$coefficients[1,4] # p-value of beta 0
+summary_out$coefficients[5,1] # p-value of beta 4
+sum(summary_out$residuals^2) / df  # residual sum of square, df get from F test
+summary_out$sigma^2</code></pre>
+<pre class="r"><code>anova(model)</code></pre>
+<div id="confidence-interval" class="section level4">
+<h4>Confidence Interval</h4>
+<pre class="r"><code>confint(model, level=.95)
+confint(model, &quot;Water&quot;, level=.95) # ci of target variable</code></pre>
+<p><strong>Plot Regression Line and CI</strong></p>
+<pre class="r"><code>plot(concrete$Water, concrete$FLOW.cm., ylim=c(0, 100),
+     xlab=&quot;Water&quot;, ylab=&quot;Flow&quot;, main=&quot;Confidence and Prediction Intervals&quot;)
+abline(model, col=&quot;red&quot;)</code></pre>
+<ol style="list-style-type: decimal">
+<li><a href="#use-model-to-predict">Use model to predicat</a> a set of
+points</li>
+<li>Get the CI from <code>conf_intervals</code> and plot</li>
+</ol>
+<pre class="r"><code>lines(new_df$Water, conf_intervals[,&quot;lwr&quot;], col=&quot;red&quot;, lty=2) # plot lower hand side
+lines(new_df$Water, conf_intervals[,&quot;upr&quot;], col=&quot;red&quot;, lty=2) # plot upper hand side
+legend(&quot;bottomright&quot;, legend=c(&quot;Fitted line&quot;, &quot;Lower/Upper CI&quot;), lty=c(1,2), col=&quot;red&quot;)</code></pre>
+</div>
+</div>
+<div id="use-model-to-predict" class="section level3">
+<h3>Use Model to Predict</h3>
+<pre class="r"><code>new_df &lt;- data.frame(Water = seq(160, 240, by = 5))
+predict.value &lt;- predict(model, new_df)
+conf_intervals &lt;- predict(model, new_df, interval=&quot;conf&quot;)</code></pre>
+</div>
+<div id="residual-analysis" class="section level3">
+<h3>Residual Analysis</h3>
+<pre class="r"><code>raw.res = M3$res     # raw residuals
+SR = rstandard((M1)) # standard residuals</code></pre>
+<div id="histogram-of-sr" class="section level4">
+<h4>Histogram of SR</h4>
+<pre class="r"><code>hist(SR, breaks=20)</code></pre>
+</div>
+<div id="qq-plot-of-sr" class="section level4">
+<h4>QQ plot of SR</h4>
+<ul>
+<li>Both tails are longer/shorter than normal distributionand</li>
+<li>SR follows normal districbution</li>
+<li>Model follows/violate normality assumption</li>
+</ul>
+<pre class="r"><code>qqnorm(SR)
+qqline(SR)</code></pre>
+<pre class="r"><code>qqnorm(SR,datax = TRUE, ylab = &quot;Standardized Residuals of Model&quot;, 
+       xlab = &quot;Z scores&quot;, main = &quot;QQ Plot&quot;, pch = 20)
+qqline(SR,datax = TRUE, col = &quot;red&quot;)</code></pre>
+</div>
+<div id="hypothesis-test-for-sr" class="section level4">
+<h4>Hypothesis Test for SR</h4>
+<p>Check if SR normal distributed, either of below holds p &lt; 0.05
+indicate <strong>Not Normal</strong></p>
+<pre class="r"><code>shapiro.test(SR)</code></pre>
+<pre class="r"><code>ks.test(SR, &quot;pnorm&quot;)</code></pre>
+</div>
+</div>
+<div id="sr-vs-fitted-response" class="section level3">
+<h3>SR vs Fitted Response</h3>
+<p>The plot of SR versus the fitted response shows the randomness of the
+SR within the range of -3 to 3 with no pattern nor trend.</p>
+<pre class="r"><code>plot(M1$fitted.values, SR, xlab = &quot;Fitted response&quot;, 
+     ylab = &quot;Standardized Residuals&quot;, main = &quot;SR vs Fitted Response&quot;, pch = 20)
+abline(h = 0, col = &quot;red&quot;)</code></pre>
+<pre class="r"><code>opar &lt;- par(mfrow=c(1,3))
+plot(x=fitted(lm_flow_water_slag), r_s, main=&quot;Fitted&quot;)</code></pre>
+<pre class="r"><code>plot(x=concrete$Water, r_s, main=&quot;X1&quot;)
+plot(x=concrete$Slag, r_s, main=&quot;X2&quot;)</code></pre>
+</div>
+<div id="raw-residual-plot" class="section level3">
+<h3>Raw Residual Plot</h3>
+<pre class="r"><code>plot(fitted(M1), raw.res)
+abline(0,0, col=&#39;red&#39;)</code></pre>
+</div>
+<div id="outliers" class="section level3">
+<h3>Outliers</h3>
+<pre class="r"><code>which(SR &lt; -3 | SR &gt; 3) # index of outliers</code></pre>
+<p>We may try to drop the influential point (87th point) and fit the
+model again to see how the coefficients change.</p>
+</div>
+<div id="influential-points" class="section level3">
+<h3>Influential Points</h3>
+<pre class="r"><code>infl &lt;- influence.measures(model)
+summary(infl)
+which(apply(infl$is.inf, 1, any))</code></pre>
+</div>
+<div id="r-simulation-1" class="section level2">
+<h2>R-Simulation</h2>
+<div id="set-random-seeds" class="section level3">
+<h3>Set Random Seeds</h3>
+<pre class="r"><code>set.seed(2138)</code></pre>
+</div>
+<div id="generate-observations" class="section level3">
+<h3>Generate Observations</h3>
+<ul>
+<li>Norm(mean, sd^2): <code>rnorm(num, mean, sd)</code></li>
+<li>Uniform(a,b): <code>runif(num, a, b)</code></li>
+<li>Gamma(alpha, lambda): <code>rgamma(num, alpha, lambda)</code></li>
+<li>Possion(lambda): <code>rpois(num, lambda)</code></li>
+<li>Binominal(n,p): <code>rbinom(num, size=n, p)</code></li>
+</ul>
+<pre class="r"><code>V &lt;- rnorm(50, 0, 10)         # 50 obs from N(0,100)
+W &lt;- runif(50, 0, 1)          # 50 obs from uniform(0,1)
+X &lt;- rgamma(50, 2, 3)         # 50 obs from Gamma(2,3)
+Y &lt;- rpois(50, 1.3)           # 50 obs from Pois(1.3)
+Z &lt;- rbinom(50, size=2, 0.3)  # 50 obs from Binom(2, 0.3)</code></pre>
+</div>
+<div id="workflow" class="section level3">
+<h3>WorkFlow</h3>
+<ul>
+<li>Generate RVs</li>
+<li>Write <code>oneSample()</code> simulation function</li>
+</ul>
+<pre class="r"><code>oneSample &lt;- function() {
+  ...
+  return (...)
+}</code></pre>
+<ul>
+<li>Repeat simulation n times</li>
+</ul>
+<pre class="r"><code>samples &lt;- sapply(rep(0, n), function(x) oneSample())</code></pre>
+<ul>
+<li>Get the <code>mean()</code> and <code>sd()</code> value and
+construct CI</li>
+</ul>
+<pre class="r"><code>X_bar &lt;- mean(samples)
+SD &lt;- sd(samples)
+z = qnorm(0.975)
+upper_ci = X_bar + z * SD / sqrt(n)
+lower_ci = X_bar - z * SD / sqrt(n)
+cat(&quot;Confidential Interval is (&quot;, lower_ci, &quot;,&quot;, upper_ci, &quot;)&quot;, sep=&quot;&quot;)</code></pre>
+<ul>
+<li>use <code>vapply()</code> if the function returns a vector</li>
+</ul>
+<pre class="r"><code>vapply(1:1000, function(x) generate_one_series(), c(1.0, 2.9))</code></pre>
+</div>
+<div id="monte-carlo-integration" class="section level3">
+<h3>Monte-Carlo Integration</h3>
+<p><span class="math display">\[E(h(X))= \int_{-\infty}^{\infty} h(x)
+f(x) \text{d}x
+\]</span> where <span class="math inline">\(f(x)\)</span> is a pdf,
+<span class="math inline">\(X \sim f\)</span></p>
+<pre class="r"><code>set.seed(2138)
+X &lt;- runif(50000, 0, 1)
+hX &lt;- exp(2*X)
+mc_est &lt;- mean(hX)</code></pre>
+</div>
+<div id="confidence-intervals" class="section level3">
+<h3>Confidence Intervals</h3>
+<p><span class="math display">\[
+\bar{X} \pm t_{0.025} s/\sqrt{n}
+\]</span> Check if it still works if the data is from an asymmetric
+distribution: <span class="math inline">\(Pois(0.5)\)</span>.</p>
+<pre class="r"><code>set.seed(2139)
+output_vec &lt;- rep(0, length=100)
+n &lt;- 20
+lambda &lt;- 0.5
+for(i in 1:length(output_vec)) {
+  X &lt;- rpois(n, .5)
+  Xbar &lt;- mean(X)
+  s &lt;- sd(X)
+  t &lt;- qt(0.975, n-1)
+  CI &lt;- c(Xbar - t*s/sqrt(n), Xbar + t*s/sqrt(n))
+  if(CI[1] &lt; lambda &amp; CI[2] &gt; lambda) {
+    output_vec[i] &lt;- 1
+  }
+}
+mean(output_vec)</code></pre>
+</div>
+<div id="type-i-error" class="section level3">
+<h3>Type I Error</h3>
+<p>Check if we falsely reject the null hypothesis 10% of the time if we
+perform it at 10% significance level</p>
+<pre class="r"><code>generate_one_test &lt;- function(n=100) {
+  X &lt;- rnorm(n)
+  Y &lt;- rnorm(n)
+  t_test &lt;- t.test(X, Y,var.equal = TRUE)
+  # extract the p-value from the t_test
+  if(t_test$p.value &lt; 0.10) 
+    return(1L) 
+  else 
+    return(0L)
+}
+
+set.seed(11)
+output_vec &lt;- vapply(1:2000, 
+                     function(x) generate_one_test(), 
+                     1L)
+mean(output_vec)</code></pre>
+</div>
 </div>
 </div>
 

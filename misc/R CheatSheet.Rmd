@@ -2,6 +2,7 @@
 
 #### Data Structore
 
+- [Basic](#basic-syntax)
 - [Vector](#vector)
 - [List](#list)
 - [Sample](#sample)
@@ -35,17 +36,45 @@
 
 **Robust Statistics**
 - [Robust](#robust)
-# R programming cheatsheet
 
-- [Basic](#basic-syntax)
-- [Vector](#vector)
-- [List](#list)
-- [Sample](#sample)
-- [Sequence](#sequence)
-- [Replication](#replication)
-- [Matrix](#matrix)
-- [Factor](#factor)
-- [Dataframe](#dataframe)
+
+## R-Test
+
+- [Normal Assumption Check](#normal-assumption-check)
+- [Parametric Independent t-Test](#t-test)
+- [Parametric Pair t-Test](#pair)
+- [Non-Parametric Independent t-Test](#wilcoxon-rank-sum)
+- [Non-Parametric Pair t-Test](#wilcoxon-sign-test)
+
+## ANOVA
+
+- [Dot Plot](#dot-plot)
+- [One-Way](#one-way-analysis-of-variance)
+- [Comparing Specific Groups](#comparing-specific-groups)
+- [General Comparison of Groups](#general-comparison-of-groups)
+- [Bonferroni Correction](#bonferroni-correction)
+- [Multiple Comparisons](#multiple-comparisons)
+
+# R Regression
+
+- [Analysis of Model](#analysis-of-model)
+- [Plot CI](#confidence-interval)
+- [Residual Analysis](#residual-analysis)
+- [Influential Points](#influential-points)
+
+
+## R-Simulation
+
+- [Generate RVs](#generate-observations)
+- [WorkFlow](#workflow)
+- [Monte-Carlo Integration](#monte-carlo-integration)
+- [CI](#confidence-intervals)
+- [Type I Error](#type-i-error)
+
+
+
+
+# R programming cheatsheet
 
 ## Basic-Syntax
 ### Loop
@@ -409,7 +438,7 @@ Output: Note that the index will not change
 ^ index do not change!
 ```
 
-# Data-Processing
+# R Data Processing
 
 ## Read/Write Data
 ### Table
@@ -522,6 +551,7 @@ cut(df$x, c(-1, 3, 6, 8), labels=c('C','B','A'))
 ```
 
 
+
 # Plotting
 
 ## Numerical
@@ -587,6 +617,9 @@ qqline(concrete$Comp.Strength)
 ```R
 col_to_use <- c("G1", "G2", "G3")
 pairs(stud_perf[, col_to_use], panel = panel.smooth)
+```
+```R
+xyplot(price ~ ldist | num_stores, as.table=TRUE, data=taiwan2, layout=c(4,3))
 ```
 
 ## Correlation-Plot
@@ -738,4 +771,543 @@ plot(k, phi, ylab=expression(phi[k]), pch=19, cex=1.5, bty='l',
      main="Poisson-ness for E.R. arrivals")
 abline(b=slope, a=-lam_hat, lty=2, col="blue")
 text(1.8, -1.3, labels=expression(hat(lambda) == "0.56"))
+```
+
+## R-Test
+
+### Normal Assumption Check
+
+#### Equal Variance
+**Rule of Thumb:** If the larger s.d is more than twice the smaller one, than we should not use the equal variance form of the test.
+```R
+aggregate(viscera ~ gender, data=abl, sd)
+```
+
+#### Skewed
+```R
+aggregate(viscera ~ gender, data=abl, Skew, method=1)
+```
+
+#### Kurtosis
+- Positive kurtosis implies that the tails are “fatter” than those of a Normal.
+- Negative kurtosis indicate that the tails are “thinner” than those of a Normal.
+```R
+aggregate(viscera ~ gender, data=abl, Kurt, method=1)
+```
+
+#### QQ Plot for Normality
+```R
+library(lattice)
+histogram(~viscera | gender, data=abl, type="count")
+qqnorm(y, main="Female Abalones");  qqline(y)
+qqnorm(x, main="Male Abalones");  qqline(x)
+```
+
+#### Hypothesis tests for Normality
+$$H_0: \text{Data follows Normal Distribution}$$
+$$H_0: \text{Data dose not follow Normal Distribution}$$
+
+```R
+shapiro.test(x)
+```
+
+You may use following function to check normality during exam.
+```R
+check_normality <- function(x) {
+  res <- shapiro.test(x)
+  if (res$p.value < 0.05) {
+    print("Data dose NOT follow normal distribution")
+  } else {
+    print("Data follows normal distribution") 
+  }
+}
+check_normality(x)
+```
+
+### Parametric Tests
+#### t-Test
+Assumes that the data originate from a **Normal distribution**.
+- $H_0: \mu_X = \mu_Y$ / The population means of the two groups are equal.
+- $H_1: \mu_X \neq \mu_Y$ / The population means of the two groups are not equal.
+```R
+data <- read.csv("data/abalone_sub.csv")
+x <- data$viscera[data$gender == "M"]
+y <- data$viscera[data$gender == "F"]
+
+t.test(x, y, var.equal=TRUE)
+```
+
+#### Pair
+
+- $D_i = X_i - Y_i$
+- $H_0: \mu_D = 0$ / The mean difference between the paired observations is zero.
+- $H_1: \mu_D \neq 0$ / The mean difference between the paired observations is not zero.
+
+```R
+data <- read.csv("data/health_promo_hr.csv")
+before <- data$baseline
+after <- data$after5
+t.test(before, after, paired=TRUE)
+```
+
+### Non-parametric Tests
+
+If the distributional assumptions of the t-test are not met
+
+#### Wilcoxon Rank Sum
+- Independent 2-sample test
+- Both $n_1$ and $n_2$ are at least 10
+- Observations (not the ranks) come from an underlying **continuous distribution**
+
+$H_0:$ The distribution of group 1 is in same location of the distribution of group 2.
+
+$H_1:$ The distribution of group 1 is a location shift of the distribution of group 2.
+
+```R
+wilcox.test(x, y)
+```
+
+#### Wilcoxon Sign Test
+
+- Paired Samples Test
+- If the number of non-zero $D_i$ ’s is at least 16, then the test statistic $W$ follows a $N(0,1)$ distribution approximately.
+- $D_i = X_i - Y_i$
+
+- $H_0: \text{median of } D_i = 0$ / The median of the differences between the paired observations is zero.
+- $H_1: \text{median of } D_i \neq 0$ / The median of the differences between the paired observations is not zero.
+- `exact` version of the test cannot be used when there are ties. i.e. There exist 0 in $D$.
+```R
+exact_check <- function(x, y) {
+  len <- length(which((x-y)==0))
+  if (len == 0) {
+    print("The exact parameter should set to be FALSE")
+  } else {
+    print("The exact parameter should set to be TRUE or Omit")
+  }
+}
+```
+```R
+wilcox.test(before, after, paired = TRUE, exact = FALSE)
+```
+- If all data are non-zero
+```R
+wilcox.test(D,alternative = "greater")
+```
+
+
+## ANOVA
+
+### Dot Plot
+```R
+locate_df <- read.table("data/locate.txt", header=TRUE)
+locate_df$location <- factor(locate_df$location, levels=c("R", "M", "F"))
+dotplot(sales ~ location, data = locate_df, cex=1.2, main="Sales by Aisle Location")
+```
+
+### One-Way Analysis of Variance
+
+- Set the reference level to be type A $\Leftrightarrow$ The coefficient of type A is zero in the model. 
+
+```R
+data <- read.csv("data/antibio.csv")
+u_levels <- sort(unique(data$type))
+data$type <- factor(data$type, levels=u_levels[c(2, 1, 3, 4, 5, 6)])
+```
+```R
+M1 <- lm(org ~ type, data=heifers)
+anova(M1)
+```
+```R
+anova_model <- aov(org ~ type, data)
+summary(anova_model)
+```
+
+
+Check ANOVA Assumptions
+- The observations are **independent** of each other.
+- The **errors** are Normally distributed.
+- The variance within each group is the same.
+
+
+
+```R
+r1 <- residuals(M1)
+hist(r1)
+qqnorm(r1); qqline(r1)
+shapiro.test(r1)
+```
+
+### Comparing specific groups
+
+```R
+est_coef <- coef(M1)  # coefficients of linear model
+est1  <- unname(est_coef[3])  # coefficients without column name
+```
+Construct 95% Confidence Interval 
+$$SE=\sqrt{MS_W \left( \frac{1}{n_{i_1}} + \frac{1}{n_{i_2}} \right) }$$
+$$100(1- \alpha)\%-\text{CI} = (\overline{Y_{i_1}} - \overline{Y_{i_2}}) \pm t_{n-k, \alpha/2}  \times SE$$
+```R
+summary_out <- anova(M1)
+MSW <- summary_out$`Mean Sq`[2]
+df <- summary_out$Df[2]
+q1 <- qt(0.025, df, 0, lower.tail = FALSE)
+
+lower_ci <- est1 - q1*sqrt(MSW * (1/6 + 1/6))
+upper_ci <- est1 + q1*sqrt(MSW * (1/6 + 1/6))
+
+cat("The 95% CI for the diff. between Enrofloxacin and Control is (",
+    format(lower_ci, digits = 3), ",", 
+    format(upper_ci, digits = 3), ").", sep="")
+```
+
+### General Comparison of Groups
+Comparison of a collection of $l_1$ groups with another collection of $l_2$ groups
+
+1. Compute the estimate of the contrast:
+$$ L = \sum_{i=1}^k c_i \overline{Y_i} \text{ where } \sum_{i=1}^k c_i=0$$
+2. Compute the standard error of the above estimator:
+$$ SE = \sqrt{MS_W \sum_{i=1}^k \frac{c_i^2}{n_i} } $$
+3. Compute the $100(1- \alpha)%$ confidence interval as:
+$$ L \pm t_{n-k, \alpha/2}  \times SE $$
+
+```R
+c1 <- c(-1, 0.5, 0.5)  # weight vector
+n_vals <- c(6, 6, 6)  # number of observations in each group
+MSW <- summary_out$`Mean Sq`[2]
+df <- summary_out$Df[2]
+
+L <- sum(c1*est_coef[3:5])  # construct estimate L
+se1 <- sqrt(MSW * sum( c1^2 / n_vals ))  # compute SE
+q1 <- qt(0.025, df, 0, lower.tail = FALSE)
+
+lower_ci <- L - q1*se1
+upper_ci <- L + q1*se1
+
+cat("The 95% CI for the diff. between the two groups is (",
+    format(lower_ci, digits = 2), ",", 
+    format(upper_ci, digits = 2), ").", sep="")
+```
+
+### Bonferroni Correction
+
+Set confidential level to be $(1 - \alpha / m)$
+```R
+anova_mod <- lm(sales ~ location, data=locate_df)
+confint(anova_mod, level = 1-0.05/2)
+```
+
+
+
+### Multiple Comparisons
+#### TukeyHSD
+
+- Correcting for multiple comparisons
+- Construct confidence intervals for **all** pairwise comparisons
+- **Shorter** confidence intervals than a Bonferroni correction for all pairwise comparisons.
+
+$$H_0: \mu_X = \mu_Y$$
+
+```R
+TukeyHSD(aov(M1), ordered = TRUE)
+```
+
+#### Kruskal-Wallis Procedure
+
+- If the assumptions of the ANOVA procedure are not met
+- Generalisation of the Wilcoxon Rank-Sum test for 2 independent samples.
+- This test should only be used if $n_i \geq 5$ for all groups.
+
+$H_0:$ All groups follow the same distribution
+
+$H_1:$ At least one of the groups’ distribution differs from another by a location shift.
+
+```R
+kruskal.test(heifers$org, heifers$type)
+```
+
+
+
+# R Regression
+
+### Regression Model $Y\sim X_1 + X_2 + X_1X_2$
+```R
+M <- lm(y ~ x1 + x2 + x1 * x2, data = ...)
+M <- lm(y ~ x1 + x2 + x1 : x2, data = ...)
+```
+
+Interpretation of Coefficients:
+
+$$y_1 = \beta_0 + \beta_1 X_1 + \beta_2 I(X_2 = 1)$$
+
+- For any fixed $X_2$, when $X_1$ increases by 1 unit, the $y$ will increase by $\beta_1$ unit
+
+- For any fixed $X_1$, the $y$ of type 1 ($X_2=1$) is $\beta_2$ more than the one of type 0 ($X_2=0$)
+
+$$y_2 = \beta_0 + \beta_1 X_1 + \beta_2 I(X_2 = 1) + \beta_3 X_1 \times I(X_2 = 1)$$
+
+- For type 1 ($X_2=1$) when $X_1$ increases by 1 unit, $y$ will increase by ($\beta_1 + \beta_3$) unit. For type 0 ($X_2=0$) when $X_1$ increases by 1 unit, $y$ will increase by $\beta_1 unit.
+
+
+Plot $Y\sim X1+X2$ where $X2$ is categorical variable
+```R
+bike2 <- read.csv("data/bike2.csv")
+lm_reg_casual <- lm(registered ~ casual, data = bike2)
+lm_reg_casual2 <- lm(registered ~ casual + workingday, data = bike2)
+```
+```R
+plot(x=bike2$casual, y=bike2$registered, 
+     col=ifelse(bike2$workingday == "yes", "salmon", "deepskyblue4"), #yes is red point, no is blue point
+     main="Comparing fitted models", cex=0.8,
+     xlab="Casual", ylab="Registered")
+abline(lm_reg_casual, col="deepskyblue4", lty=2) # plot Y~X1 regression line
+est_coef <- coef(lm_reg_casual2)
+abline(est_coef[1], est_coef[2], col="deepskyblue4") # plot regression line of Y in non-workingday
+abline(est_coef[1]+est_coef[3], est_coef[2], col="salmon") # plot regression line of Y in workingday
+legend("bottomright", legend=c("lm_reg_casual", "lm_reg_causal2"), lty=c(1,2), cex=0.7)  # add legend
+```
+
+
+### Transformation of Response
+```R
+M1 <- lm(log(y) ~ x, data = ...)
+M2 <- lm(sqrt(y) ~ x, data = ...)
+```
+
+### Analysis of Model
+
+```R
+concrete <- read.csv("data/concrete+slump+test/slump_test.data")
+names(concrete)[c(1,11)] <- c("id", "Comp.Strength")
+model <- lm(FLOW.cm. ~ Water, data=concrete)
+```
+**Explain Significance**
+- t-test has test statistic t = XX which has null distribution of t(df, find in residual), and p-value of the test is then < 0.001.
+- With a very small p-value, the data provide very strong evidence that (X/Model/..) is significant.
+```R
+summary(model)
+```
+- $R^2$: Model can explain XX% of the variation in the observed response 
+```R
+summary_out <- summary(model)
+summary_out$r.squared
+summary_out$adj.r.squared
+```
+```R
+unname(coef(lm_sg_pop)) # coefficients estimates without column name
+summary_out$coefficients[1,4] # p-value of beta 0
+summary_out$coefficients[5,1] # p-value of beta 4
+sum(summary_out$residuals^2) / df  # residual sum of square, df get from F test
+summary_out$sigma^2
+```
+
+```R
+anova(model)
+```
+
+#### Confidence Interval
+```R
+confint(model, level=.95)
+confint(model, "Water", level=.95) # ci of target variable
+```
+**Plot Regression Line and CI**
+```R
+plot(concrete$Water, concrete$FLOW.cm., ylim=c(0, 100),
+     xlab="Water", ylab="Flow", main="Confidence and Prediction Intervals")
+abline(model, col="red")
+```
+1. [Use model to predicat](#use-model-to-predict) a set of points
+2. Get the CI from `conf_intervals` and plot
+```R
+lines(new_df$Water, conf_intervals[,"lwr"], col="red", lty=2) # plot lower hand side
+lines(new_df$Water, conf_intervals[,"upr"], col="red", lty=2) # plot upper hand side
+legend("bottomright", legend=c("Fitted line", "Lower/Upper CI"), lty=c(1,2), col="red")
+```
+
+### Use Model to Predict
+```R
+new_df <- data.frame(Water = seq(160, 240, by = 5))
+predict.value <- predict(model, new_df)
+conf_intervals <- predict(model, new_df, interval="conf")
+```
+
+### Residual Analysis
+
+```R
+raw.res = M3$res     # raw residuals
+SR = rstandard((M1)) # standard residuals
+```
+
+#### Histogram of SR
+```R
+hist(SR, breaks=20)
+```
+#### QQ plot of SR
+- Both tails are longer/shorter than normal distributionand 
+- SR follows normal districbution
+- Model follows/violate normality assumption
+```R
+qqnorm(SR)
+qqline(SR)
+```
+```R
+qqnorm(SR,datax = TRUE, ylab = "Standardized Residuals of Model", 
+       xlab = "Z scores", main = "QQ Plot", pch = 20)
+qqline(SR,datax = TRUE, col = "red")
+```
+#### Hypothesis Test for SR
+Check if SR normal distributed, either of below holds p < 0.05 indicate **Not Normal**
+```R
+shapiro.test(SR)
+```
+```R
+ks.test(SR, "pnorm")
+```
+### SR vs Fitted Response
+
+The plot of SR versus the fitted response shows the randomness of the SR within the range of -3 to 3 with no pattern nor trend.
+```R
+plot(M1$fitted.values, SR, xlab = "Fitted response", 
+     ylab = "Standardized Residuals", main = "SR vs Fitted Response", pch = 20)
+abline(h = 0, col = "red")
+```
+```R
+opar <- par(mfrow=c(1,3))
+plot(x=fitted(lm_flow_water_slag), r_s, main="Fitted")
+```
+```R
+plot(x=concrete$Water, r_s, main="X1")
+plot(x=concrete$Slag, r_s, main="X2")
+```
+
+### Raw Residual Plot
+```R
+plot(fitted(M1), raw.res)
+abline(0,0, col='red')
+```
+
+### Outliers
+
+```R
+which(SR < -3 | SR > 3) # index of outliers
+```
+We may try to drop the influential point (87th point) and fit the model again to see how the coefficients change.
+
+### Influential Points
+```R
+infl <- influence.measures(model)
+summary(infl)
+which(apply(infl$is.inf, 1, any))
+```
+
+
+## R-Simulation
+
+### Set Random Seeds
+```R
+set.seed(2138)
+```
+
+### Generate Observations
+
+- Norm(mean, sd^2): `rnorm(num, mean, sd)`
+- Uniform(a,b): `runif(num, a, b)`
+- Gamma(alpha, lambda): `rgamma(num, alpha, lambda)`
+- Possion(lambda): `rpois(num, lambda)`
+- Binominal(n,p): `rbinom(num, size=n, p)`
+
+```R
+V <- rnorm(50, 0, 10)         # 50 obs from N(0,100)
+W <- runif(50, 0, 1)          # 50 obs from uniform(0,1)
+X <- rgamma(50, 2, 3)         # 50 obs from Gamma(2,3)
+Y <- rpois(50, 1.3)           # 50 obs from Pois(1.3)
+Z <- rbinom(50, size=2, 0.3)  # 50 obs from Binom(2, 0.3)
+```
+
+### WorkFlow
+- Generate RVs
+- Write `oneSample()` simulation function
+```R
+oneSample <- function() {
+  ...
+  return (...)
+}
+```
+- Repeat simulation n times
+```R
+samples <- sapply(rep(0, n), function(x) oneSample())
+```
+- Get the `mean()` and `sd()` value and construct CI
+```R
+X_bar <- mean(samples)
+SD <- sd(samples)
+z = qnorm(0.975)
+upper_ci = X_bar + z * SD / sqrt(n)
+lower_ci = X_bar - z * SD / sqrt(n)
+cat("Confidential Interval is (", lower_ci, ",", upper_ci, ")", sep="")
+```
+- use `vapply()` if the function returns a vector 
+```R
+vapply(1:1000, function(x) generate_one_series(), c(1.0, 2.9))
+```
+
+
+
+
+### Monte-Carlo Integration
+$$E(h(X))= \int_{-\infty}^{\infty} h(x) f(x) \text{d}x
+$$
+where $f(x)$ is a pdf, $X \sim f$
+
+```R
+set.seed(2138)
+X <- runif(50000, 0, 1)
+hX <- exp(2*X)
+mc_est <- mean(hX)
+```
+
+### Confidence Intervals
+$$
+\bar{X} \pm t_{0.025} s/\sqrt{n}
+$$
+Check if it still works if the data is from an asymmetric distribution: $Pois(0.5)$.
+
+```R
+set.seed(2139)
+output_vec <- rep(0, length=100)
+n <- 20
+lambda <- 0.5
+for(i in 1:length(output_vec)) {
+  X <- rpois(n, .5)
+  Xbar <- mean(X)
+  s <- sd(X)
+  t <- qt(0.975, n-1)
+  CI <- c(Xbar - t*s/sqrt(n), Xbar + t*s/sqrt(n))
+  if(CI[1] < lambda & CI[2] > lambda) {
+    output_vec[i] <- 1
+  }
+}
+mean(output_vec)
+```
+
+### Type I Error
+
+Check if we falsely reject the null hypothesis 10% of the time if we perform it at 10% significance level
+
+```R
+generate_one_test <- function(n=100) {
+  X <- rnorm(n)
+  Y <- rnorm(n)
+  t_test <- t.test(X, Y,var.equal = TRUE)
+  # extract the p-value from the t_test
+  if(t_test$p.value < 0.10) 
+    return(1L) 
+  else 
+    return(0L)
+}
+
+set.seed(11)
+output_vec <- vapply(1:2000, 
+                     function(x) generate_one_test(), 
+                     1L)
+mean(output_vec)
 ```

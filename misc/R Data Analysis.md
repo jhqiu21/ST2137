@@ -22,6 +22,7 @@
 - [Robust](#robust)
 
 
+
 ## Numerical
 ```R
 summary(df$x)    # -> numerical summary
@@ -85,6 +86,9 @@ qqline(concrete$Comp.Strength)
 ```R
 col_to_use <- c("G1", "G2", "G3")
 pairs(stud_perf[, col_to_use], panel = panel.smooth)
+```
+```R
+xyplot(price ~ ldist | num_stores, as.table=TRUE, data=taiwan2, layout=c(4,3))
 ```
 
 ## Correlation-Plot
